@@ -16,6 +16,29 @@ code {
     monospace;
 }
 
+/*
+  This is a fix for the react-simple-code-editor library.
+  It doesn't expose a way to style the underlying <pre> element directly,
+  so we have to use a global stylesheet to apply our themes.
+  The !important flag is necessary to override the inline styles set by the library.
+*/
+.editor-styles .npm__react-simple-code-editor__textarea:focus {
+  outline: none;
+}
+
+/* Light theme styles for the editor */
+.editor-styles pre {
+  background-color: #f5f2f0 !important;
+  color: #383a42 !important;
+}
+
+/* Dark theme styles for the editor */
+html.dark .editor-styles pre {
+  background-color: #2d2d2d !important;
+  color: #abb2bf !important;
+}
+
+
 /* Custom override for PrismJS theme to improve contrast on dark backgrounds */
 div[class*="bg-gray-900"] code[class*="language-"],
 div[class*="bg-gray-900"] pre[class*="language-"] {

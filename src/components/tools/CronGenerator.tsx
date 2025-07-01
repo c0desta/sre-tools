@@ -81,7 +81,7 @@ const CronGenerator: React.FC = () => {
           <button
             key={num}
             onClick={() => handleSelect(num)}
-            className={`p-2 rounded text-center text-sm ${selectedValues.includes(String(num)) ? 'bg-indigo-600 text-white' : 'bg-gray-200'}`}>
+            className={`p-2 rounded text-center text-sm ${selectedValues.includes(String(num)) ? 'bg-indigo-600 text-white' : 'bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'}`}>
             {num}
           </button>
         ))}
@@ -94,35 +94,35 @@ const CronGenerator: React.FC = () => {
       case 'minute':
         return (
           <div>
-            <div className="mb-2"><input type="radio" name="minute" checked={minute === '*'} onChange={() => setMinute('*')} className="mr-2"/> Every Minute (*)</div>
+            <div className="mb-2 dark:text-gray-300"><input type="radio" name="minute" checked={minute === '*'} onChange={() => setMinute('*')} className="mr-2"/> Every Minute (*)</div>
             <div>{renderNumberGrid(59, minute, setMinute)}</div>
           </div>
         );
       case 'hour':
         return (
             <div>
-              <div className="mb-2"><input type="radio" name="hour" checked={hour === '*'} onChange={() => setHour('*')} className="mr-2"/> Every Hour (*)</div>
+              <div className="mb-2 dark:text-gray-300"><input type="radio" name="hour" checked={hour === '*'} onChange={() => setHour('*')} className="mr-2"/> Every Hour (*)</div>
               <div>{renderNumberGrid(23, hour, setHour)}</div>
             </div>
           );
       case 'dayOfMonth':
         return (
             <div>
-              <div className="mb-2"><input type="radio" name="dayOfMonth" checked={dayOfMonth === '*'} onChange={() => setDayOfMonth('*')} className="mr-2"/> Every Day of Month (*)</div>
+              <div className="mb-2 dark:text-gray-300"><input type="radio" name="dayOfMonth" checked={dayOfMonth === '*'} onChange={() => setDayOfMonth('*')} className="mr-2"/> Every Day of Month (*)</div>
               <div>{renderNumberGrid(31, dayOfMonth, setDayOfMonth, 1)}</div>
             </div>
           );
       case 'month':
         return (
             <div>
-              <div className="mb-2"><input type="radio" name="month" checked={month === '*'} onChange={() => setMonth('*')} className="mr-2"/> Every Month (*)</div>
+              <div className="mb-2 dark:text-gray-300"><input type="radio" name="month" checked={month === '*'} onChange={() => setMonth('*')} className="mr-2"/> Every Month (*)</div>
               <div>{renderNumberGrid(12, month, setMonth, 1)}</div>
             </div>
           );
       case 'dayOfWeek':
         return (
             <div>
-              <div className="mb-2"><input type="radio" name="dayOfWeek" checked={dayOfWeek === '*'} onChange={() => setDayOfWeek('*')} className="mr-2"/> Every Day of Week (*)</div>
+              <div className="mb-2 dark:text-gray-300"><input type="radio" name="dayOfWeek" checked={dayOfWeek === '*'} onChange={() => setDayOfWeek('*')} className="mr-2"/> Every Day of Week (*)</div>
               <div>{renderNumberGrid(6, dayOfWeek, setDayOfWeek)}</div>
             </div>
           );
@@ -140,18 +140,18 @@ const CronGenerator: React.FC = () => {
   ];
 
   return (
-    <div className="p-4 md:p-8 bg-gray-50 min-h-screen">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">Cron Expression Generator</h1>
+    <div className="p-4 md:p-8 bg-gray-50 dark:bg-gray-900 min-h-screen">
+      <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-100">Cron Expression Generator</h1>
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="bg-white p-6 rounded-lg shadow-lg">
-          <div className="border-b border-gray-200 mb-4">
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+          <div className="border-b border-gray-200 dark:border-gray-700 mb-4">
             <nav className="-mb-px flex space-x-4" aria-label="Tabs">
               {tabs.map(tab => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`${activeTab === tab.id ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+                  className={`${activeTab === tab.id ? 'border-indigo-500 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-500'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
                 >
                   {tab.label}
                 </button>
@@ -161,16 +161,16 @@ const CronGenerator: React.FC = () => {
           <div>{renderTabContent()}</div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow-lg">
-          <h2 className="text-xl font-semibold mb-4 text-gray-700">Result</h2>
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+          <h2 className="text-xl font-semibold mb-4 text-gray-700 dark:text-gray-300">Result</h2>
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Cron Expression</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Cron Expression</label>
             <div className="mt-1 flex rounded-md shadow-sm">
               <input
                 type="text"
                 readOnly
                 value={cronExpression}
-                className="flex-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-l-md sm:text-sm"
+                className="flex-1 block w-full px-3 py-2 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-200 rounded-l-md sm:text-sm"
               />
               <button
                 onClick={copyToClipboard}
@@ -181,11 +181,11 @@ const CronGenerator: React.FC = () => {
             </div>
           </div>
           <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700">Explanation</label>
-            <p className="mt-1 text-lg text-gray-900 bg-gray-100 p-3 rounded-md min-h-[40px]">{explanation}</p>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Explanation</label>
+            <p className="mt-1 text-lg text-gray-900 dark:text-gray-200 bg-gray-100 dark:bg-gray-700 p-3 rounded-md min-h-[40px]">{explanation}</p>
           </div>
-          <hr className="my-6" />
-          <h2 className="text-xl font-semibold mb-4 text-gray-700">Reverse Cron</h2>
+          <hr className="my-6 border-gray-300 dark:border-gray-700" />
+          <h2 className="text-xl font-semibold mb-4 text-gray-700 dark:text-gray-300">Reverse Cron</h2>
           <div>
             <label htmlFor="cron-input" className="block text-sm font-medium text-gray-700">Paste Cron Expression</label>
             <input
@@ -193,11 +193,11 @@ const CronGenerator: React.FC = () => {
               type="text"
               value={cronExpression}
               onChange={handleCronInputChange}
-              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               placeholder="e.g. * * * * *"
             />
           </div>
-          {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+          {error && <p className="text-red-500 dark:text-red-400 text-sm mt-2">{error}</p>}
         </div>
       </div>
     </div>

@@ -1,7 +1,8 @@
 import React, { Suspense } from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
-import Navbar from './components/layout/Navbar';
+
 import tools from './config/tools';
+import Sidebar from './components/layout/Sidebar';
 import './App.css';
 
 // Loading component for Suspense fallback
@@ -14,61 +15,40 @@ const Loading = () => (
 
 const App: React.FC = () => {
   return (
-    <div className="app">
-      <Navbar />
-      <main className="main-content">
-        <Suspense fallback={<Loading />}>
-          <Routes>
-            <Route path="/" element={
-              <div className="home-page">
-                <h1>Welcome to SRE Tools</h1>
-                <p>A collection of useful tools for Site Reliability Engineers and DevOps professionals.</p>
-                
-                {/* Group tools by category */}
-                {Array.from(new Set(tools.map(tool => tool.category))).map(category => (
-                  <div key={category} className="tool-category">
-                    <h2>{category}</h2>
-                    <div className="tools-grid">
-                      {tools
-                        .filter(tool => tool.category === category)
-                        .map(tool => (
-                          <div key={tool.id} className="tool-card">
-                            <h3>{tool.icon && <span className="tool-icon">{tool.icon}</span>} {tool.title}</h3>
-                            <p>{tool.description}</p>
-                            <Link to={tool.path} className="tool-link">
-                              Use Tool <span className="arrow">→</span>
-                            </Link>
-                          </div>
-                        ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            } />
-            
-            {/* Generate routes for all tools */}
-            {tools.map(tool => (
-              <Route 
-                key={tool.id} 
-                path={tool.path} 
-                element={<tool.component />} 
-              />
-            ))}
-            
-            {/* 404 - Not Found */}
-            <Route path="*" element={
-              <div className="not-found">
-                <h2>404 - Page Not Found</h2>
-                <p>The page you're looking for doesn't exist or has been moved.</p>
-                <Link to="/" className="home-link">← Back to Home</Link>
-              </div>
-            } />
-          </Routes>
-        </Suspense>
+    <div className="flex h-screen bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+      <Sidebar />
+      <main className="flex-1 flex flex-col overflow-hidden">
+        <div className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 dark:bg-gray-800">
+          <Suspense fallback={<Loading />}>
+            <Routes>
+              <Route path="/" element={
+                <div className="p-8">
+                  <h1 className="text-4xl font-bold text-gray-800 dark:text-gray-100">Welcome to SRE Tools</h1>
+                  <p className="mt-2 text-lg text-gray-600 dark:text-gray-400">Select a tool from the sidebar to get started.</p>
+                </div>
+              } />
+              
+              {/* Generate routes for all tools */}
+              {tools.map(tool => (
+                <Route 
+                  key={tool.id} 
+                  path={tool.path} 
+                  element={<tool.component />} 
+                />
+              ))}
+              
+              {/* 404 - Not Found */}
+              <Route path="*" element={
+                <div className="p-8">
+                  <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">404 - Page Not Found</h2>
+                  <p className="mt-2 text-gray-600 dark:text-gray-400">The page you're looking for doesn't exist or has been moved.</p>
+                  <Link to="/" className="text-indigo-600 dark:text-indigo-400 hover:underline mt-4 inline-block">← Back to Home</Link>
+                </div>
+              } />
+            </Routes>
+          </Suspense>
+        </div>
       </main>
-      <footer className="footer">
-        <p>© {new Date().getFullYear()} SRE Tools - Open Source</p>
-      </footer>
     </div>
   );
 };

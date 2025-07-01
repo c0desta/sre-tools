@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './AwsIpLookup.css';
+
 
 interface AwsIpRange {
   ip_prefix?: string;
@@ -86,50 +86,55 @@ const AwsIpLookup: React.FC = () => {
   };
 
   return (
-    <div className="aws-ip-lookup">
-      <h2>AWS IP Lookup</h2>
-      <p className="tool-description">
-        Check if an IP address belongs to AWS and find its region and service.
-      </p>
-      
-      <form onSubmit={handleSubmit} className="ip-form">
-        <div className="form-group">
-          <input
-            type="text"
-            value={ipAddress}
-            onChange={(e) => setIpAddress(e.target.value)}
-            placeholder="Enter IP address (e.g., 52.95.110.1)"
-            className="ip-input"
-            disabled={isLoading}
-          />
-          <button 
-            type="submit" 
-            className="lookup-button"
-            disabled={isLoading || !ipAddress.trim()}
-          >
-            {isLoading ? 'Checking...' : 'Lookup'}
-          </button>
-        </div>
-      </form>
-      
-      {error && <div className="error-message">{error}</div>}
-      
-      {result && (
-        <div className="result-container">
-          <h3>Result</h3>
-          <div className="result-details">
-            <p><strong>IP Range:</strong> {result.ip_prefix || 'N/A'}</p>
-            <p><strong>Region:</strong> {result.region}</p>
-            <p><strong>Service:</strong> {result.service}</p>
+    <div className="p-4 md:p-8 bg-gray-100 dark:bg-gray-900 min-h-screen">
+      <div className="max-w-3xl mx-auto bg-white dark:bg-gray-800 p-6 md:p-8 rounded-xl shadow-lg">
+        <h1 className="text-3xl font-bold mb-4 text-center text-gray-800 dark:text-gray-100">AWS IP Lookup</h1>
+        <p className="text-gray-600 dark:text-gray-400 text-center mb-8 leading-relaxed">
+          Check if an IP address belongs to the AWS cloud and find its region and service.
+        </p>
+
+        <form onSubmit={handleSubmit} className="mb-8">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <input
+              type="text"
+              value={ipAddress}
+              onChange={(e) => setIpAddress(e.target.value)}
+              placeholder="Enter IP Address (e.g., 52.95.110.1)"
+              className="flex-grow px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+            />
+            <button type="submit" className="px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:ring-offset-gray-800 disabled:bg-indigo-400 dark:disabled:bg-indigo-500 disabled:cursor-not-allowed transition" disabled={isLoading}>
+              {isLoading ? 'Checking...' : 'Lookup IP'}
+            </button>
           </div>
-        </div>
-      )}
-      
-      {result === null && !error && !isLoading && (
-        <div className="result-container">
-          <p>The IP address does not appear to be in AWS IP ranges.</p>
-        </div>
-      )}
+        </form>
+
+        {error && (
+          <div className="bg-red-100 dark:bg-red-800/30 border border-red-400 dark:border-red-600 text-red-700 dark:text-red-300 px-4 py-3 rounded-lg relative" role="alert">
+            <strong className="font-bold">Error: </strong>
+            <span className="block sm:inline">{error}</span>
+          </div>
+        )}
+
+        {result !== null && (
+          <div className="mt-8">
+            {result ? (
+              <div className="bg-green-100 dark:bg-green-800/30 border border-green-400 dark:border-green-600 text-green-800 dark:text-green-200 px-4 py-5 rounded-lg">
+                <h3 className="text-xl font-bold mb-3">IP Found in AWS Ranges</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                  <div><strong>IP Prefix:</strong> <span className="font-mono bg-gray-200 dark:bg-gray-700 p-1 rounded">{result.ip_prefix}</span></div>
+                  <div><strong>Region:</strong> {result.region}</div>
+                  <div><strong>Service:</strong> {result.service}</div>
+                </div>
+              </div>
+            ) : (
+              <div className="bg-blue-100 dark:bg-blue-800/30 border border-blue-400 dark:border-blue-600 text-blue-800 dark:text-blue-200 px-4 py-5 rounded-lg">
+                <h3 className="text-xl font-bold mb-2">IP Not Found in AWS Ranges</h3>
+                <p>The IP address is not currently listed in the AWS IP ranges.</p>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

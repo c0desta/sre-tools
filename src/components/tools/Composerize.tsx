@@ -83,26 +83,26 @@ const Composerize: React.FC = () => {
   };
 
   return (
-    <div className="p-4 md:p-8 bg-gray-50 min-h-screen">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">Composerize: Docker Run to Compose</h1>
+    <div className="p-4 md:p-8 bg-gray-50 dark:bg-gray-900 min-h-screen">
+      <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-100">Composerize: Docker Run to Compose</h1>
       <div className="space-y-8">
         <div>
-          <label className="text-xl font-semibold mb-4 text-gray-700 block">Docker Run Command</label>
+          <label className="text-xl font-semibold mb-4 text-gray-700 dark:text-gray-300 block">Docker Run Command</label>
           <textarea
             value={dockerCommand}
             onChange={(e) => setDockerCommand(e.target.value)}
             placeholder="Paste your 'docker run' command here..."
-            className="w-full h-32 p-3 font-mono text-sm border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out"
+            className="w-full h-32 p-3 font-mono text-sm border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 rounded-md focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out"
           />
         </div>
 
         <div>
           <div className="flex justify-between items-center mb-4">
-            <label className="text-xl font-semibold text-gray-700">docker-compose.yml</label>
+            <label className="text-xl font-semibold text-gray-700 dark:text-gray-300">docker-compose.yml</label>
             <button
               onClick={handleCopy}
               disabled={!composeYaml}
-              className="px-4 py-2 bg-indigo-600 text-white font-semibold rounded-md shadow-sm hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition"
+              className="px-4 py-2 bg-indigo-600 text-white font-semibold rounded-md shadow-sm hover:bg-indigo-700 dark:hover:bg-indigo-500 disabled:bg-gray-400 dark:disabled:bg-gray-600 disabled:cursor-not-allowed transition"
             >
               Copy YAML
             </button>

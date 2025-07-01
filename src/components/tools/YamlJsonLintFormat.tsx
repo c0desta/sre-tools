@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Editor from 'react-simple-code-editor';
 import Prism from 'prismjs';
-import 'prismjs/themes/prism-tomorrow.css';
+import '../../styles/prism-themes.css';
 import 'prismjs/components/prism-json';
 import 'prismjs/components/prism-yaml';
 import jsyaml from 'js-yaml';
@@ -94,49 +94,42 @@ const YamlJsonLintFormat: React.FC = () => {
   };
 
   return (
-    <div className="p-4 bg-gray-100 min-h-screen">
-      <h1 className="text-2xl font-bold mb-4">YAML & JSON Lint & Format</h1>
-      <div className="bg-white p-4 rounded-lg shadow-md">
+    <div className="p-4 bg-gray-100 dark:bg-gray-900 min-h-screen">
+      <h1 className="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">YAML & JSON Lint & Format</h1>
+      <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md">
         <div className="relative">
           <Editor
             value={code}
             onValueChange={setCode}
             highlight={highlightCode}
             padding={10}
-            style={{
-              fontFamily: '"Fira code", "Fira Mono", monospace',
-              fontSize: 14,
-              border: '1px solid #ddd',
-              borderRadius: '4px',
-              minHeight: '400px',
-              background: '#2d2d2d',
-              color: '#f8f8f2',
-            }}
+            className="font-mono text-sm rounded-md min-h-[400px] focus-within:ring-2 focus-within:ring-indigo-500 editor-styles"
+            style={{ outline: 'none' }}
           />
         </div>
         <div className="flex items-center justify-between mt-4">
-          <div className="flex items-center space-x-4">
-            <div>
-              <span className="font-semibold">YAML:</span>
-              {isValidYaml === true && <span className="text-green-500 ml-2">✔ Valid</span>}
-              {isValidYaml === false && <span className="text-red-500 ml-2">✖ Invalid</span>}
+          <div className="flex items-center space-x-4 order-last sm:order-first">
+            <div className="flex items-center space-x-2">
+              <span className="font-semibold dark:text-gray-300">YAML:</span>
+              {isValidYaml === null ? <span className="px-3 py-1 text-sm rounded-full bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-300">...</span> :
+               isValidYaml ? <span className="px-3 py-1 text-sm rounded-full bg-green-200 text-green-800 dark:bg-green-800/50 dark:text-green-200">✔ Valid</span> :
+                             <span className="px-3 py-1 text-sm rounded-full bg-red-200 text-red-800 dark:bg-red-800/50 dark:text-red-200">✖ Invalid</span>}
             </div>
-            <div>
-              <span className="font-semibold">JSON:</span>
-              {isValidJson === true && <span className="text-green-500 ml-2">✔ Valid</span>}
-              {isValidJson === false && <span className="text-red-500 ml-2">✖ Invalid</span>}
+            <div className="flex items-center space-x-2">
+              <span className="font-semibold dark:text-gray-300">JSON:</span>
+              {isValidJson === null ? <span className="px-3 py-1 text-sm rounded-full bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-300">...</span> :
+               isValidJson ? <span className="px-3 py-1 text-sm rounded-full bg-green-200 text-green-800 dark:bg-green-800/50 dark:text-green-200">✔ Valid</span> :
+                             <span className="px-3 py-1 text-sm rounded-full bg-red-200 text-red-800 dark:bg-red-800/50 dark:text-red-200">✖ Invalid</span>}
             </div>
           </div>
           <div className="flex space-x-2">
-            <button onClick={formatCode} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Format</button>
-            <button onClick={copyCode} className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">Copy</button>
-            <button onClick={clearCode} className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">Clear</button>
+            <button onClick={formatCode} className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:ring-offset-gray-800">Format</button>
+            <button onClick={copyCode} className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 dark:ring-offset-gray-800">Copy</button>
+            <button onClick={clearCode} className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:ring-offset-gray-800">Clear</button>
           </div>
         </div>
         {error && (
-          <div className="mt-4 p-2 bg-red-100 text-red-700 rounded">
-            {error}
-          </div>
+          <pre className="mt-2 text-sm text-red-600 dark:text-red-400 whitespace-pre-wrap">{error}</pre>
         )}
       </div>
     </div>
