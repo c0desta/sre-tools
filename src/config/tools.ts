@@ -7,6 +7,7 @@ const CidrSubnetCalculator = lazy(() => import('../components/tools/CidrSubnetCa
 const YamlJsonLintFormat = lazy(() => import('../components/tools/YamlJsonLintFormat'));
 const CronGenerator = lazy(() => import('../components/tools/CronGenerator'));
 const JwtDecoder = lazy(() => import('../components/tools/JwtDecoder'));
+const SreErrorBudgetDashboard = lazy(() => import('../components/tools/SreErrorBudgetDashboard'));
 // Import other tools here as we create them
 
 // Add new tools to this array
@@ -55,6 +56,15 @@ const tools: Tool[] = [
     component: JwtDecoder,
     category: 'Security',
     icon: '🔐',
+  },
+  {
+    id: 'sre-error-budget-dashboard',
+    title: 'SRE Error Budget Dashboard',
+    description: 'Define, calculate, and track Service Level Objectives (SLOs) and their associated error budgets.',
+    path: '/sre-error-budget-dashboard',
+    component: SreErrorBudgetDashboard,
+    category: 'SRE',
+    icon: '📊',
   },
   // Add more tools here following the same pattern
 ];
