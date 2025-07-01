@@ -4,6 +4,7 @@ import { Tool } from '../types/tool';
 // Lazy load tool components for better performance
 const AwsIpLookup = lazy(() => import('../components/tools/AwsIpLookup'));
 const CidrSubnetCalculator = lazy(() => import('../components/tools/CidrSubnetCalculator'));
+const YamlJsonLintFormat = lazy(() => import('../components/tools/YamlJsonLintFormat'));
 // Import other tools here as we create them
 
 // Add new tools to this array
@@ -25,6 +26,15 @@ const tools: Tool[] = [
     component: CidrSubnetCalculator,
     category: 'Networking',
     icon: '🔢',
+  },
+  {
+    id: 'yaml-json-lint-format',
+    title: 'YAML & JSON Lint & Format',
+    description: 'Validate, format, and lint YAML and JSON code in real-time.',
+    path: '/yaml-json-lint-format',
+    component: YamlJsonLintFormat,
+    category: 'Formatters',
+    icon: '📝',
   },
   // Add more tools here following the same pattern
 ];
