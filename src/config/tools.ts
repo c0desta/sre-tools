@@ -8,6 +8,7 @@ const YamlJsonLintFormat = lazy(() => import('../components/tools/YamlJsonLintFo
 const CronGenerator = lazy(() => import('../components/tools/CronGenerator'));
 const JwtDecoder = lazy(() => import('../components/tools/JwtDecoder'));
 const SreErrorBudgetDashboard = lazy(() => import('../components/tools/SreErrorBudgetDashboard'));
+const Composerize = lazy(() => import('../components/tools/Composerize'));
 // Import other tools here as we create them
 
 // Add new tools to this array
@@ -65,6 +66,15 @@ const tools: Tool[] = [
     component: SreErrorBudgetDashboard,
     category: 'SRE',
     icon: '📊',
+  },
+  {
+    id: 'composerize',
+    title: 'Composerize: Docker Run to Compose',
+    description: 'Convert docker run commands to docker-compose.yml files.',
+    path: '/composerize',
+    component: Composerize,
+    category: 'Docker',
+    icon: '🐳',
   },
   // Add more tools here following the same pattern
 ];
