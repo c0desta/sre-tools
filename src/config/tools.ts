@@ -6,6 +6,7 @@ const AwsIpLookup = lazy(() => import('../components/tools/AwsIpLookup'));
 const CidrSubnetCalculator = lazy(() => import('../components/tools/CidrSubnetCalculator'));
 const YamlJsonLintFormat = lazy(() => import('../components/tools/YamlJsonLintFormat'));
 const CronGenerator = lazy(() => import('../components/tools/CronGenerator'));
+const JwtDecoder = lazy(() => import('../components/tools/JwtDecoder'));
 // Import other tools here as we create them
 
 // Add new tools to this array
@@ -45,6 +46,15 @@ const tools: Tool[] = [
     component: CronGenerator,
     category: 'Scheduling',
     icon: '⏰',
+  },
+  {
+    id: 'jwt-decoder',
+    title: 'JWT Decoder',
+    description: 'Decode and inspect JSON Web Tokens in real-time.',
+    path: '/jwt-decoder',
+    component: JwtDecoder,
+    category: 'Security',
+    icon: '🔐',
   },
   // Add more tools here following the same pattern
 ];
