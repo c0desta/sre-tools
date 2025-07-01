@@ -118,6 +118,7 @@ const Composerize: React.FC = () => {
                 fontFamily: '"Fira code", "Fira Mono", monospace',
                 fontSize: 14,
                 minHeight: '200px',
+                color: '#d1d5db', // Tailwind gray-300 for better contrast
               }}
             />
           </div>

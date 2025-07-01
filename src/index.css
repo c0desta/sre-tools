@@ -15,3 +15,9 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* Custom override for PrismJS theme to improve contrast on dark backgrounds */
+div[class*="bg-gray-900"] code[class*="language-"],
+div[class*="bg-gray-900"] pre[class*="language-"] {
+  color: #d1d5db; /* Tailwind's gray-300 */
+}
