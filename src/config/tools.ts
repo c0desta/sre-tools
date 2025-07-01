@@ -5,6 +5,7 @@ import { Tool } from '../types/tool';
 const AwsIpLookup = lazy(() => import('../components/tools/AwsIpLookup'));
 const CidrSubnetCalculator = lazy(() => import('../components/tools/CidrSubnetCalculator'));
 const YamlJsonLintFormat = lazy(() => import('../components/tools/YamlJsonLintFormat'));
+const CronGenerator = lazy(() => import('../components/tools/CronGenerator'));
 // Import other tools here as we create them
 
 // Add new tools to this array
@@ -35,6 +36,15 @@ const tools: Tool[] = [
     component: YamlJsonLintFormat,
     category: 'Formatters',
     icon: '📝',
+  },
+  {
+    id: 'cron-generator',
+    title: 'Cron Expression Generator',
+    description: 'Generate and understand cron expressions with a real-time explainer.',
+    path: '/cron-generator',
+    component: CronGenerator,
+    category: 'Scheduling',
+    icon: '⏰',
   },
   // Add more tools here following the same pattern
 ];
