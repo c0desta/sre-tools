@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { useTheme } from '../../context/ThemeContext';
-import { FiSun, FiMoon } from '../icons';
+import { FiSun, FiMoon, FiCode } from '../icons';
 import tools from '../../config/tools';
 
 const Sidebar: React.FC = () => {
@@ -86,8 +86,16 @@ const Sidebar: React.FC = () => {
           )}
         </button>
       </div>
-      <footer className="p-4 border-t border-gray-700 text-center text-xs text-gray-500">
-        <p>© {new Date().getFullYear()} SRE Tools</p>
+      <footer className="p-4 border-t border-gray-700 text-center text-sm text-gray-400">
+        <a
+          href="https://github.com/c0desta"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-center hover:text-white transition-colors"
+        >
+          <FiCode className="mr-2" />
+          <span>c0desta &copy; {new Date().getFullYear()}</span>
+        </a>
       </footer>
     </aside>
   );
