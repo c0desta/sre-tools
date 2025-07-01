@@ -1,33 +1,87 @@
-# Getting Started with Create React App
+# SRE Tools
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A collection of useful tools for Site Reliability Engineers and DevOps professionals. This is a static website built with React that can be easily deployed to GitHub Pages.
 
-## Available Scripts
+## Features
+
+- **AWS IP Lookup**: Check if an IP address belongs to AWS and find its region and service.
+- **Easy to Extend**: Add new tools with minimal configuration.
+- **Responsive Design**: Works on desktop and mobile devices.
+- **Fast and Lightweight**: Built with performance in mind.
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js (v14 or later)
+- npm (v6 or later) or yarn
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-username/sre-tools.git
+   cd sre-tools
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   # or
+   yarn
+   ```
+
+### Available Scripts
 
 In the project directory, you can run:
 
-### `npm start`
+- `npm start` - Runs the app in development mode. Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- `npm test` - Launches the test runner in interactive watch mode.
+- `npm run build` - Builds the app for production to the `build` folder.
+- `npm run deploy` - Builds and deploys the app to GitHub Pages.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## 🛠 Adding a New Tool
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+1. Create a new component in `src/components/tools/` (e.g., `MyNewTool.tsx`)
+2. Add your tool to the `src/config/tools.ts` file:
+   ```typescript
+   const MyNewTool = lazy(() => import('../components/tools/MyNewTool'));
+   
+   const tools: Tool[] = [
+     // ... existing tools
+     {
+       id: 'my-new-tool',
+       title: 'My New Tool',
+       description: 'A brief description of what the tool does.',
+       path: '/my-new-tool',
+       component: MyNewTool,
+       category: 'Category Name',
+       icon: '🔧',
+     },
+   ];
+   ```
 
-### `npm test`
+3. That's it! The tool will automatically appear in the navigation and home page.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 🚀 Deployment
 
-### `npm run build`
+### GitHub Pages
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. Update the `homepage` field in `package.json` with your GitHub Pages URL:
+   ```json
+   "homepage": "https://your-username.github.io/sre-tools",
+   ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+2. Deploy to GitHub Pages:
+   ```bash
+   npm run deploy
+   ```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+3. Enable GitHub Pages in your repository settings (GitHub Settings > Pages) to use the `gh-pages` branch.
+
+## 📝 License
+
+This project is open source and available under the [MIT License](LICENSE).
 
 ### `npm run eject`
 
