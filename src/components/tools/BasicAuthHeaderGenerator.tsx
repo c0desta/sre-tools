@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 
-import { FaCopy } from 'react-icons/fa';
+import { FiCopy } from '../icons';
 
 const BasicAuthHeaderGenerator: React.FC = () => {
   const [username, setUsername] = useState('');
@@ -84,7 +84,7 @@ const BasicAuthHeaderGenerator: React.FC = () => {
                 className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white"
                 aria-label="Copy to clipboard"
               >
-                <FaCopy />
+                <FiCopy />
               </button>
             </div>
             {copied && <p className="text-sm text-green-600 dark:text-green-400 mt-2">Copied to clipboard!</p>}

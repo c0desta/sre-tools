@@ -226,7 +226,7 @@ const SreErrorBudgetDashboard: React.FC = () => {
                   {alertingThresholds.map(t => (
                     <tr key={t.window} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                       <td className="py-2 px-4 border-b dark:border-gray-700 text-sm text-gray-800 dark:text-gray-200">{t.window}</td>
-                      <td className="py-2 px-4 border-b text-sm text-gray-800 font-mono">{t.downtime}</td>
+                      <td className="py-2 px-4 border-b dark:border-gray-700 text-sm text-gray-800 dark:text-gray-200 font-mono">{t.downtime}</td>
                     </tr>
                   ))}
                 </tbody>
