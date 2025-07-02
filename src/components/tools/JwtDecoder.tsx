@@ -61,13 +61,13 @@ const JwtDecoder: React.FC = () => {
     <div className="p-4 md:p-8 bg-gray-50 dark:bg-gray-900 min-h-screen">
       <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-100">JWT Decoder</h1>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg min-w-0">
           <h2 className="text-xl font-semibold mb-4 text-gray-700 dark:text-gray-300">Encoded Token</h2>
           <textarea
             value={encodedToken}
             onChange={(e) => setEncodedToken(e.target.value)}
             placeholder="Paste your JWT here"
-            className="w-full h-full min-h-[300px] p-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 rounded-md focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out"
+            className="w-full h-full min-h-[300px] p-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 rounded-md focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out break-all"
             style={{ resize: 'none' }}
           />
         </div>

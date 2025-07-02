@@ -10,10 +10,30 @@ const JwtDecoder = lazy(() => import('../components/tools/JwtDecoder'));
 const SreErrorBudgetDashboard = lazy(() => import('../components/tools/SreErrorBudgetDashboard'));
 const BasicAuthHeaderGenerator = lazy(() => import('../components/tools/BasicAuthHeaderGenerator'));
 const Composerize = lazy(() => import('../components/tools/Composerize'));
+const MarkdownPreviewer = lazy(() => import('../components/tools/MarkdownPreviewer'));
+const MyIpAddress = lazy(() => import('../components/tools/MyIpAddress'));
 // Import other tools here as we create them
 
 // Add new tools to this array
 const tools: Tool[] = [
+  {
+    id: 'my-ip-address',
+    title: 'What\'s My IP',
+    description: 'Displays your public IP address.',
+    path: '/my-ip-address',
+    component: MyIpAddress,
+    category: 'Networking',
+    icon: '🌐',
+  },
+  {
+    id: 'live-markdown-previewer',
+    title: 'Live Markdown Previewer',
+    description: 'A live, side-by-side editor that renders Markdown as you type.',
+    path: '/live-markdown-previewer',
+    component: MarkdownPreviewer,
+    category: 'Formatters',
+    icon: '✍️',
+  },
   {
     id: 'basic-auth-header-generator',
     title: 'Basic Auth Header Generator',
