@@ -8,11 +8,21 @@ const YamlJsonLintFormat = lazy(() => import('../components/tools/YamlJsonLintFo
 const CronGenerator = lazy(() => import('../components/tools/CronGenerator'));
 const JwtDecoder = lazy(() => import('../components/tools/JwtDecoder'));
 const SreErrorBudgetDashboard = lazy(() => import('../components/tools/SreErrorBudgetDashboard'));
+const BasicAuthHeaderGenerator = lazy(() => import('../components/tools/BasicAuthHeaderGenerator'));
 const Composerize = lazy(() => import('../components/tools/Composerize'));
 // Import other tools here as we create them
 
 // Add new tools to this array
 const tools: Tool[] = [
+  {
+    id: 'basic-auth-header-generator',
+    title: 'Basic Auth Header Generator',
+    description: 'Generate a Basic Auth HTTP header from a username and password.',
+    path: '/basic-auth-header-generator',
+    component: BasicAuthHeaderGenerator,
+    category: 'Web',
+    icon: '🔑',
+  },
   {
     id: 'aws-ip-lookup',
     title: 'AWS IP Lookup',
