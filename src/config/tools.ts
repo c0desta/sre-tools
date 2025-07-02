@@ -12,10 +12,20 @@ const BasicAuthHeaderGenerator = lazy(() => import('../components/tools/BasicAut
 const Composerize = lazy(() => import('../components/tools/Composerize'));
 const MarkdownPreviewer = lazy(() => import('../components/tools/MarkdownPreviewer'));
 const MyIpAddress = lazy(() => import('../components/tools/MyIpAddress'));
+const TimezoneConverter = lazy(() => import('../components/tools/TimezoneConverter'));
 // Import other tools here as we create them
 
 // Add new tools to this array
 const tools: Tool[] = [
+  {
+    id: 'timezone-converter',
+    title: 'Timezone Converter',
+    description: 'Convert dates and times between different timezones.',
+    path: '/timezone-converter',
+    component: TimezoneConverter,
+    category: 'Date & Time',
+    icon: '🕒',
+  },
   {
     id: 'my-ip-address',
     title: 'What\'s My IP',
