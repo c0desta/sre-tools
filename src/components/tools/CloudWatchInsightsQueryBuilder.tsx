@@ -10,6 +10,9 @@ const LOG_TEMPLATES = {
   cloudfront: {
     fields: ['@timestamp', '`cs-method`', '`cs-uri-stem`', '`sc-status`', '`c-ip`', '`x-edge-location`', '`cs(User-Agent)`', '`x-edge-result-type`'],
   },
+  vpcflow: {
+    fields: ['@timestamp', 'srcaddr', 'dstaddr', 'action', 'protocol', 'interfaceId', 'logStatus'],
+  },
 };
 
 type LogType = keyof typeof LOG_TEMPLATES;
@@ -46,6 +49,14 @@ const FREQUENT_QUERIES: Record<LogType, { name: string; state: any }[]> = {
         filters: [],
       },
     },
+    {
+      name: '5xx Server Errors',
+      state: {
+        filters: [{ field: 'elb_status_code', op: '=~', value: '5[0-9]{2}', id: 0 }],
+        sort: { field: '@timestamp', dir: 'desc' },
+        limit: 50,
+      },
+    },
   ],
   cloudfront: [
     {
@@ -76,6 +87,47 @@ const FREQUENT_QUERIES: Record<LogType, { name: string; state: any }[]> = {
         limit: 10,
         fields: ['`x-edge-result-type`', 'count(*)'],
         filters: [],
+      },
+    },
+    {
+      name: 'Requests by Edge Location',
+      state: {
+        stats: { func: 'count', field: '*', by: '`x-edge-location`' },
+        sort: { field: 'count(*)', dir: 'desc' },
+        limit: 20,
+        fields: ['`x-edge-location`', 'count(*)'],
+        filters: [],
+      },
+    },
+  ],
+  vpcflow: [
+    {
+      name: 'Top 10 Source IPs (Talkers)',
+      state: {
+        stats: { func: 'sum(bytes)', field: 'bytes', by: 'srcaddr' },
+        sort: { field: 'sum(bytes)', dir: 'desc' },
+        limit: 10,
+        fields: ['srcaddr', 'sum(bytes)'],
+        filters: [],
+      },
+    },
+    {
+      name: 'Top 10 Destination IPs (Listeners)',
+      state: {
+        stats: { func: 'sum(bytes)', field: 'bytes', by: 'dstaddr' },
+        sort: { field: 'sum(bytes)', dir: 'desc' },
+        limit: 10,
+        fields: ['dstaddr', 'sum(bytes)'],
+        filters: [],
+      },
+    },
+    {
+      name: 'Rejected Traffic',
+      state: {
+        filters: [{ field: 'action', op: '==', value: 'REJECT', id: 0 }],
+        sort: { field: '@timestamp', dir: 'desc' },
+        limit: 50,
+        fields: ['@timestamp', 'srcaddr', 'dstaddr', 'action'],
       },
     },
   ],
@@ -153,6 +205,7 @@ const CloudWatchInsightsQueryBuilder: React.FC = () => {
               <option value="generic">Generic</option>
               <option value="alb">Application Load Balancer</option>
               <option value="cloudfront">CloudFront</option>
+              <option value="vpcflow">VPC Flow Logs</option>
             </select>
           </div>
 
