@@ -15,6 +15,7 @@ const MyIpAddress = lazy(() => import('../components/tools/MyIpAddress'));
 const TimezoneConverter = lazy(() => import('../components/tools/TimezoneConverter'));
 const KubernetesProbeSimulator = lazy(() => import('../components/tools/KubernetesProbeSimulator'));
 const PromQLQueryAssistant = lazy(() => import('../components/tools/PromQLQueryAssistant'));
+const CloudWatchInsightsQueryBuilder = lazy(() => import('../components/tools/CloudWatchInsightsQueryBuilder'));
 // Import other tools here as we create them
 
 // Add new tools to this array
@@ -117,6 +118,15 @@ const tools: Tool[] = [
     component: PromQLQueryAssistant,
     category: 'Monitoring',
     icon: '📊',
+  },
+  {
+    id: 'cloudwatch-insights-query-builder',
+    title: 'CloudWatch Insights Query Builder',
+    description: 'Visually construct queries for AWS CloudWatch Logs Insights.',
+    path: '/cloudwatch-insights-query-builder',
+    component: CloudWatchInsightsQueryBuilder,
+    category: 'AWS',
+    icon: '☁️',
   },
   {
     id: 'sre-error-budget-dashboard',
