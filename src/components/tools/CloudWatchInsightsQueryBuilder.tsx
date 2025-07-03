@@ -5,14 +5,93 @@ const LOG_TEMPLATES = {
     fields: ['@timestamp', '@message'],
   },
   alb: {
-    fields: ['@timestamp', 'elb_status_code', 'client_ip', 'request', 'target_group_arn'],
+    fields: ['@timestamp', 'elb_status_code', 'client_ip', 'request', 'target_group_arn', 'user_agent'],
   },
   cloudfront: {
-    fields: ['@timestamp', 'cs-method', 'cs-uri-stem', 'sc-status', 'c-ip', 'x-edge-location'],
+    fields: ['@timestamp', '`cs-method`', '`cs-uri-stem`', '`sc-status`', '`c-ip`', '`x-edge-location`', '`cs(User-Agent)`', '`x-edge-result-type`'],
   },
 };
 
 type LogType = keyof typeof LOG_TEMPLATES;
+
+const FREQUENT_QUERIES: Record<LogType, { name: string; state: any }[]> = {
+  alb: [
+    {
+      name: 'Top 10 Client IPs',
+      state: {
+        stats: { func: 'count', field: '*', by: 'client_ip' },
+        sort: { field: 'count(*)', dir: 'desc' },
+        limit: 10,
+        fields: ['client_ip', 'count(*)'],
+        filters: [],
+      },
+    },
+    {
+      name: 'Top 10 User Agents',
+      state: {
+        stats: { func: 'count', field: '*', by: 'user_agent' },
+        sort: { field: 'count(*)', dir: 'desc' },
+        limit: 10,
+        fields: ['user_agent', 'count(*)'],
+        filters: [],
+      },
+    },
+    {
+      name: 'HTTP Status Code Counts',
+      state: {
+        stats: { func: 'count', field: '*', by: 'elb_status_code' },
+        sort: { field: 'elb_status_code', dir: 'asc' },
+        limit: 50,
+        fields: ['elb_status_code', 'count(*)'],
+        filters: [],
+      },
+    },
+  ],
+  cloudfront: [
+    {
+      name: 'Top 10 Client IPs',
+      state: {
+        stats: { func: 'count', field: '*', by: '`c-ip`' },
+        sort: { field: 'count(*)', dir: 'desc' },
+        limit: 10,
+        fields: ['`c-ip`', 'count(*)'],
+        filters: [],
+      },
+    },
+    {
+      name: 'Top 10 User Agents',
+      state: {
+        stats: { func: 'count', field: '*', by: '`cs(User-Agent)`' },
+        sort: { field: 'count(*)', dir: 'desc' },
+        limit: 10,
+        fields: ['`cs(User-Agent)`', 'count(*)'],
+        filters: [],
+      },
+    },
+    {
+      name: 'Cache Hit vs Miss',
+      state: {
+        stats: { func: 'count', field: '*', by: '`x-edge-result-type`' },
+        sort: { field: '`x-edge-result-type`', dir: 'asc' },
+        limit: 10,
+        fields: ['`x-edge-result-type`', 'count(*)'],
+        filters: [],
+      },
+    },
+  ],
+  generic: [
+    {
+      name: 'Count "ERROR" in messages',
+      state: {
+        filters: [{ field: '@message', op: '=~', value: 'ERROR', id: 0 }],
+        stats: { func: 'count', field: '*', by: '' },
+        sort: { field: '@timestamp', dir: 'desc' },
+        limit: 20,
+        fields: ['@timestamp', '@message'],
+      },
+    },
+  ],
+};
 
 const CloudWatchInsightsQueryBuilder: React.FC = () => {
   const [query, setQuery] = useState('');
@@ -25,35 +104,31 @@ const CloudWatchInsightsQueryBuilder: React.FC = () => {
 
   useEffect(() => {
     setFields(LOG_TEMPLATES[logType].fields);
+    // Reset builder when log type changes
+    applyCannedQuery({});
   }, [logType]);
 
   useEffect(() => {
     const queryParts: string[] = [];
-
-    if (fields.length > 0) {
-      queryParts.push(`fields ${fields.join(', ')}`);
-    }
-
+    if (fields.length > 0) queryParts.push(`fields ${fields.join(', ')}`);
     const activeFilters = filters.filter(f => f.field && f.value);
-    if (activeFilters.length > 0) {
-      queryParts.push(`filter ${activeFilters.map(f => `${f.field} ${f.op} "${f.value}"`).join(' and ')}`);
-    }
-
+    if (activeFilters.length > 0) queryParts.push(`filter ${activeFilters.map(f => `${f.field} ${f.op} "${f.value}"`).join(' and ')}`);
     if (stats.func && stats.field) {
       const byClause = stats.by ? ` by ${stats.by}` : '';
       queryParts.push(`stats ${stats.func}(${stats.field})${byClause}`);
     }
-
-    if (sort.field && sort.dir) {
-      queryParts.push(`sort ${sort.field} ${sort.dir}`);
-    }
-
-    if (limit > 0) {
-      queryParts.push(`limit ${limit}`);
-    }
-
+    if (sort.field && sort.dir) queryParts.push(`sort ${sort.field} ${sort.dir}`);
+    if (limit > 0) queryParts.push(`limit ${limit}`);
     setQuery(queryParts.join(' | '));
   }, [fields, filters, stats, sort, limit]);
+
+  const applyCannedQuery = (state: any) => {
+    setFields(state.fields || LOG_TEMPLATES[logType].fields);
+    setFilters(state.filters || [{ field: '', op: '==', value: '', id: Date.now() }]);
+    setStats(state.stats || { func: '', field: '', by: '' });
+    setSort(state.sort || { field: '@timestamp', dir: 'desc' });
+    setLimit(state.limit || 20);
+  };
 
   const handleFilterChange = (index: number, field: string, value: any) => {
     const newFilters = [...filters];
@@ -87,7 +162,7 @@ const CloudWatchInsightsQueryBuilder: React.FC = () => {
               {LOG_TEMPLATES[logType].fields.map(field => (
                 <label key={field} className="flex items-center space-x-2">
                   <input type="checkbox" checked={fields.includes(field)} onChange={() => setFields(prev => prev.includes(field) ? prev.filter(f => f !== field) : [...prev, field])} className="rounded" />
-                  <span className="text-sm text-gray-800 dark:text-gray-200">{field}</span>
+                  <span className="text-sm text-gray-800 dark:text-gray-200 font-mono">{field}</span>
                 </label>
               ))}
             </div>
@@ -112,7 +187,7 @@ const CloudWatchInsightsQueryBuilder: React.FC = () => {
             <div>
               <label className="block text-sm font-medium text-gray-600 dark:text-gray-300">Stats Function</label>
               <select value={stats.func} onChange={e => setStats(s => ({...s, func: e.target.value}))} className="mt-1 w-full p-2 border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200">
-                <option>count</option><option>sum</option><option>avg</option><option>min</option><option>max</option>
+                <option value="">None</option><option>count</option><option>sum</option><option>avg</option><option>min</option><option>max</option>
               </select>
             </div>
             <div>
@@ -142,6 +217,21 @@ const CloudWatchInsightsQueryBuilder: React.FC = () => {
             </div>
           </div>
 
+        </div>
+
+        <div className="mt-8 bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+          <h2 className="text-xl font-semibold mb-4 text-gray-700 dark:text-gray-200">Frequently Used Queries</h2>
+          <div className="flex flex-wrap gap-2">
+            {FREQUENT_QUERIES[logType].map(cannedQuery => (
+              <button
+                key={cannedQuery.name}
+                onClick={() => applyCannedQuery(cannedQuery.state)}
+                className="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm hover:bg-indigo-200 dark:bg-indigo-900 dark:text-indigo-300 dark:hover:bg-indigo-800"
+              >
+                {cannedQuery.name}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className="mt-8 bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
