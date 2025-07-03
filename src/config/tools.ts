@@ -13,6 +13,8 @@ const Composerize = lazy(() => import('../components/tools/Composerize'));
 const MarkdownPreviewer = lazy(() => import('../components/tools/MarkdownPreviewer'));
 const MyIpAddress = lazy(() => import('../components/tools/MyIpAddress'));
 const TimezoneConverter = lazy(() => import('../components/tools/TimezoneConverter'));
+const KubernetesProbeSimulator = lazy(() => import('../components/tools/KubernetesProbeSimulator'));
+const PromQLQueryAssistant = lazy(() => import('../components/tools/PromQLQueryAssistant'));
 // Import other tools here as we create them
 
 // Add new tools to this array
@@ -97,6 +99,24 @@ const tools: Tool[] = [
     component: JwtDecoder,
     category: 'Security',
     icon: '🔐',
+  },
+  {
+    id: 'kubernetes-probe-simulator',
+    title: 'Kubernetes Probe Simulator',
+    description: 'Visually simulate and understand Kubernetes liveness and readiness probes.',
+    path: '/kubernetes-probe-simulator',
+    component: KubernetesProbeSimulator,
+    category: 'Kubernetes',
+    icon: '🚢',
+  },
+  {
+    id: 'promql-query-assistant',
+    title: 'PromQL Query Assistant',
+    description: 'Build and understand Prometheus queries with a builder and explainer.',
+    path: '/promql-query-assistant',
+    component: PromQLQueryAssistant,
+    category: 'Monitoring',
+    icon: '📊',
   },
   {
     id: 'sre-error-budget-dashboard',
