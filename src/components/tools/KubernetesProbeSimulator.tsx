@@ -69,7 +69,8 @@ const KubernetesProbeSimulator: React.FC = () => {
 
   useEffect(() => {
     runSimulation();
-  }, [settings]); // Rerun simulation if settings change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [settings]); // Rerun simulation if settings changed
 
   const handleProbeClick = (index: number) => {
     const newTimeline = [...timeline];
@@ -80,10 +81,10 @@ const KubernetesProbeSimulator: React.FC = () => {
     runSimulation();
   };
 
-  const resetSimulation = () => {
+  const resetSimulation = useCallback(() => {
     setTimeline([]);
     runSimulation();
-  }
+  }, [runSimulation]);
 
   const getStatusColor = (status: PodStatus) => {
     if (status === 'Healthy') return 'bg-green-500';

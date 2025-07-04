@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 const LOG_TEMPLATES = {
   generic: {
@@ -152,19 +152,27 @@ const FREQUENT_QUERIES: Record<LogType, { name: string; state: any }[]> = {
 };
 
 const CloudWatchInsightsQueryBuilder: React.FC = () => {
-  const [query, setQuery] = useState('');
   const [logType, setLogType] = useState<LogType>('generic');
   const [fields, setFields] = useState<string[]>(LOG_TEMPLATES.generic.fields);
-  const [filters, setFilters] = useState([{ field: '', op: '==', value: '', id: 0 }]);
-  const [stats, setStats] = useState({ func: 'count', field: '@message', by: '' });
+  const [filters, setFilters] = useState([{ field: '', op: '==', value: '', id: Date.now() }]);
+  const [stats, setStats] = useState({ func: '', field: '', by: '' });
   const [sort, setSort] = useState({ field: '@timestamp', dir: 'desc' });
   const [limit, setLimit] = useState(20);
+  const [query, setQuery] = useState('');
+
+  const applyCannedQuery = useCallback((state: any) => {
+    setFields(state.fields || LOG_TEMPLATES[logType].fields);
+    setFilters(state.filters || [{ field: '', op: '==', value: '', id: Date.now() }]);
+    setStats(state.stats || { func: '', field: '', by: '' });
+    setSort(state.sort || { field: '@timestamp', dir: 'desc' });
+    setLimit(state.limit || 20);
+  }, [logType]);
 
   useEffect(() => {
     setFields(LOG_TEMPLATES[logType].fields);
     // Reset builder when log type changes
     applyCannedQuery({});
-  }, [logType]);
+  }, [logType, applyCannedQuery]);
 
   useEffect(() => {
     const queryParts: string[] = [];
@@ -180,22 +188,15 @@ const CloudWatchInsightsQueryBuilder: React.FC = () => {
     setQuery(queryParts.join(' | '));
   }, [fields, filters, stats, sort, limit]);
 
-  const applyCannedQuery = (state: any) => {
-    setFields(state.fields || LOG_TEMPLATES[logType].fields);
-    setFilters(state.filters || [{ field: '', op: '==', value: '', id: Date.now() }]);
-    setStats(state.stats || { func: '', field: '', by: '' });
-    setSort(state.sort || { field: '@timestamp', dir: 'desc' });
-    setLimit(state.limit || 20);
-  };
-
-  const handleFilterChange = (index: number, field: string, value: any) => {
+  const handleFilterChange = useCallback((index: number, field: string, value: any) => {
     const newFilters = [...filters];
     newFilters[index] = { ...newFilters[index], [field]: value };
     setFilters(newFilters);
-  };
+  }, [filters]);
 
-  const addFilter = () => setFilters([...filters, { field: '', op: '==', value: '', id: Date.now() }]);
-  const removeFilter = (index: number) => setFilters(filters.filter((_, i) => i !== index));
+  const addFilter = useCallback(() => setFilters([...filters, { field: '', op: '==', value: '', id: Date.now() }]), [filters]);
+
+  const removeFilter = useCallback((index: number) => setFilters(filters.filter((_, i) => i !== index)), [filters]);
 
   return (
     <div className="p-4 md:p-8 bg-gray-50 dark:bg-gray-900 min-h-screen">

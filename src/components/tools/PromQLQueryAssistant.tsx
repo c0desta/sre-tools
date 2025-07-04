@@ -31,7 +31,7 @@ const generateExplanation = (query: string): string[] => {
   }
 
   // 3. Parse metric and labels
-  const metricRegex = /^([a-zA-Z_:][a-zA-Z0-9_:]+)\s*\{([^\}]*)\}$/;
+  const metricRegex = /^([a-zA-Z_:][a-zA-Z0-9_:]+)\s*\{([^}]*)\}$/;
   const metricMatch = remainingQuery.match(metricRegex);
 
   if (metricMatch) {
