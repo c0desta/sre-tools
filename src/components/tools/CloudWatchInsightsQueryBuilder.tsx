@@ -107,7 +107,7 @@ const FREQUENT_QUERIES: Record<LogType, { name: string; state: any }[]> = {
         stats: { func: 'sum', field: 'bytes', by: 'srcaddr' },
         sort: { field: '@sum_bytes', dir: 'desc' },
         limit: 10,
-        fields: ['srcaddr', 'bytes'],
+        fields: ['srcaddr'],
         filters: [],
       },
     },
@@ -117,7 +117,7 @@ const FREQUENT_QUERIES: Record<LogType, { name: string; state: any }[]> = {
         stats: { func: 'sum', field: 'bytes', by: 'dstaddr' },
         sort: { field: '@sum_bytes', dir: 'desc' },
         limit: 10,
-        fields: ['dstaddr', 'bytes'],
+        fields: ['dstaddr'],
         filters: [],
       },
     },
@@ -133,13 +133,19 @@ const FREQUENT_QUERIES: Record<LogType, { name: string; state: any }[]> = {
   ],
   generic: [
     {
-      name: 'Count "ERROR" in messages',
+      name: "Count 'ERROR' in messages",
       state: {
         filters: [{ field: '@message', op: '=~', value: 'ERROR', id: 0 }],
-        stats: { func: 'count', field: '*', by: '' },
-        sort: { field: '@timestamp', dir: 'desc' },
+        stats: { func: 'count', field: '*' },
+      },
+    },
+    {
+      name: 'Top 20 Log Streams by Event Count',
+      state: {
+        stats: { func: 'count', field: '*', by: '@logStream' },
+        sort: { field: '@count', dir: 'desc' },
         limit: 20,
-        fields: ['@timestamp', '@message'],
+        fields: ['@logStream'],
       },
     },
   ],
