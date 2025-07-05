@@ -5,20 +5,29 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import rehypeRaw from 'rehype-raw';
 
 const MarkdownPreviewer: React.FC = () => {
   const [markdown, setMarkdown] = useState<string>('# Hello, Markdown!\n\nThis is a live previewer.\n\n- Type on the left\n- See the result on the right\n\n```javascript\nconsole.log("Syntax highlighting!");\n```');
   const previewRef = useRef<HTMLDivElement>(null);
 
   const handleDownloadPdf = () => {
-    if (previewRef.current) {
-      html2canvas(previewRef.current, { scale: 2 }).then((canvas) => {
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF('p', 'mm', 'a4');
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-        pdf.save('markdown-preview.pdf');
+    const input = previewRef.current;
+    if (input) {
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      // Set background to white for the PDF
+      const tempClone = input.cloneNode(true) as HTMLElement;
+      tempClone.style.backgroundColor = 'white';
+
+      pdf.html(tempClone, {
+        callback: function (pdf) {
+          pdf.save('markdown-preview.pdf');
+        },
+        x: 10,
+        y: 10,
+        width: 190, // A4 width in mm minus margins
+        windowWidth: input.offsetWidth,
+        autoPaging: 'text',
       });
     }
   };
@@ -87,6 +96,7 @@ const MarkdownPreviewer: React.FC = () => {
         <div ref={previewRef} className="p-4 overflow-auto bg-white dark:bg-gray-900 prose dark:prose-invert max-w-none">
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
+            rehypePlugins={[rehypeRaw]}
             components={{
               code({ node, className, children, ...props }) {
                 const match = /language-(\w+)/.exec(className || '');
