@@ -1,5 +1,7 @@
 # SRE Tools
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 A collection of useful tools for Site Reliability Engineers and DevOps professionals. This is a static website built with React that can be easily deployed to GitHub Pages.
 
 ## Features
