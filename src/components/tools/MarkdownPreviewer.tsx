@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -10,6 +10,55 @@ import rehypeRaw from 'rehype-raw';
 const MarkdownPreviewer: React.FC = () => {
   const [markdown, setMarkdown] = useState<string>('# Hello, Markdown!\n\nThis is a live previewer.\n\n- Type on the left\n- See the result on the right\n\n```javascript\nconsole.log("Syntax highlighting!");\n```');
   const previewRef = useRef<HTMLDivElement>(null);
+  const previewContainerRef = useRef<HTMLDivElement>(null);
+  const [pageBreakLines, setPageBreakLines] = useState<number[]>([]);
+
+  // Debounce utility
+  function debounce<F extends (...args: any[]) => any>(func: F, waitFor: number) {
+    let timeout: ReturnType<typeof setTimeout> | null = null;
+
+    return (...args: Parameters<F>): void => {
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+      timeout = setTimeout(() => func(...args), waitFor);
+    };
+  }
+
+  useEffect(() => {
+    const calculateBreaks = () => {
+      if (previewRef.current && previewContainerRef.current) {
+        const pageHeightInPx = 970; // A4 height approximation in pixels, adjusted for accuracy
+        const contentHeight = previewRef.current.offsetHeight;
+        const numPages = Math.ceil(contentHeight / pageHeightInPx);
+        const breaks = [];
+        for (let i = 1; i < numPages; i++) {
+          breaks.push(i * pageHeightInPx);
+        }
+        setPageBreakLines(breaks);
+      }
+    };
+
+    const debouncedCalculate = debounce(calculateBreaks, 300);
+
+    debouncedCalculate();
+
+    window.addEventListener('resize', debouncedCalculate);
+
+    const observer = new MutationObserver(debouncedCalculate);
+    if (previewRef.current) {
+      observer.observe(previewRef.current, {
+        childList: true,
+        subtree: true,
+        characterData: true,
+      });
+    }
+
+    return () => {
+      window.removeEventListener('resize', debouncedCalculate);
+      observer.disconnect();
+    };
+  }, [markdown]);
 
   const handleDownloadPdf = () => {
     const input = previewRef.current;
@@ -18,6 +67,10 @@ const MarkdownPreviewer: React.FC = () => {
       // Set background to white for the PDF
       const tempClone = input.cloneNode(true) as HTMLElement;
       tempClone.style.backgroundColor = 'white';
+
+      // Remove page break indicators from the clone
+      const pageBreaks = tempClone.querySelectorAll('.page-break-indicator');
+      pageBreaks.forEach(pb => pb.remove());
 
       pdf.html(tempClone, {
         callback: function (pdf) {
@@ -37,6 +90,11 @@ const MarkdownPreviewer: React.FC = () => {
       const printWindow = window.open('', '', 'height=800,width=1000');
       if (printWindow) {
         const previewContent = previewRef.current.cloneNode(true) as HTMLDivElement;
+        
+        // Remove page break indicators from the clone
+        const pageBreaks = previewContent.querySelectorAll('.page-break-indicator');
+        pageBreaks.forEach(pb => pb.remove());
+
         const styles = `
           <style>
             body { font-family: sans-serif; }
@@ -93,31 +151,42 @@ const MarkdownPreviewer: React.FC = () => {
             </button>
           </div>
         </div>
-        <div ref={previewRef} className="p-4 overflow-auto bg-white dark:bg-gray-900 prose dark:prose-invert max-w-none">
-          <ReactMarkdown
-            remarkPlugins={[remarkGfm]}
-            rehypePlugins={[rehypeRaw]}
-            components={{
-              code({ node, className, children, ...props }) {
-                const match = /language-(\w+)/.exec(className || '');
-                return match ? (
-                  <SyntaxHighlighter
-                    style={vscDarkPlus as any}
-                    language={match[1]}
-                    PreTag="div"
-                  >
-                    {String(children).replace(/\n$/, '')}
-                  </SyntaxHighlighter>
-                ) : (
-                  <code className={className} {...props}>
-                    {children}
-                  </code>
-                );
-              },
-            }}
-          >
-            {markdown}
-          </ReactMarkdown>
+        <div ref={previewContainerRef} className="relative flex-grow overflow-auto bg-white dark:bg-gray-900">
+          <div ref={previewRef} className="p-4 prose dark:prose-invert max-w-none">
+            {pageBreakLines.map((top, i) => (
+              <div
+                key={i}
+                className="page-break-indicator absolute left-0 right-0 border-t-2 border-dashed border-red-500 print:hidden"
+                style={{ top: `${top}px`, marginLeft: '1rem', marginRight: '1rem' }}
+              >
+                <span className="absolute -mt-3 bg-red-500 text-white text-xs p-1 rounded">Page {i + 2}</span>
+              </div>
+            ))}
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              rehypePlugins={[rehypeRaw]}
+              components={{
+                code({ node, className, children, ...props }) {
+                  const match = /language-(\w+)/.exec(className || '');
+                  return match ? (
+                    <SyntaxHighlighter
+                      style={vscDarkPlus as any}
+                      language={match[1]}
+                      PreTag="div"
+                    >
+                      {String(children).replace(/\n$/, '')}
+                    </SyntaxHighlighter>
+                  ) : (
+                    <code className={className} {...props}>
+                      {children}
+                    </code>
+                  );
+                },
+              }}
+            >
+              {markdown}
+            </ReactMarkdown>
+          </div>
         </div>
       </div>
     </div>
